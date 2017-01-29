@@ -16,25 +16,23 @@ class APP extends React.Component {
             speaker: '',
             questions: [],
             currentQuestion: false,
-            results: {}
+            results: {},
+            messages: []
         };
         this.emit = this.emit.bind(this);
     }
 
     componentWillMount() {
-        this.socket = io("http://localhost:3000");
+        this.socket = io('http://localhost:3000');
         
         this.socket.on('connect', () => {
 
             var member = (sessionStorage.member) ? JSON.parse(sessionStorage.member) : null;
 
-            if (member && member.type === 'audience') {
+            if (member) {
                 this.emit('join', member);
-            } else if (member && member.type === 'speaker') {
-                this.emit('start', { name: member.name, title: sessionStorage.title });
-            }
-
-            this.setState({ status: 'connected' });
+                this.setState({ status: 'connected', socket: this.socket});
+            } 
         });
         
 
@@ -78,7 +76,12 @@ class APP extends React.Component {
         this.socket.on('results', (data) => {
             this.setState({ results: data });
         });
-        
+
+        this.socket.on('receive-messages', (data) => {
+           this.state.messages.push(data.msg);
+           console.log("Received message from %s", data.name );
+           this.setState({ messages: this.state.messages});
+        });
     }
 
     emit(eventName, payload) {
@@ -87,7 +90,7 @@ class APP extends React.Component {
 
     render() {
         return (
-            <div>
+            <div class="container-fluid" >
                 <Header {...this.state} />
                 <RouteHandler emit={this.emit} {...this.state} />
             </div>

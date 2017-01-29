@@ -3,11 +3,12 @@ var _ = require('underscore');
 var app = express();
 
 var connections = [];
-var title = 'Untitled Presentation';
+var title = 'muddbutt';
 var audience = [];
 var speaker = {};
 var questions = require('./app-questions');
-var currentQuestion = false;
+var currentQuestion = false
+
 var results = {
 	a: 0,
 	b: 0,
@@ -87,8 +88,20 @@ io.sockets.on('connection', function (socket) {
 		results: results
 	});
 
+	
 	connections.push(socket);
     console.log("Connected: %s sockets connected.", connections.length);
+
+    // ##################################################################
+    // 						Chat events here for now... TODO
+    // #################################################################
+
+    socket.on('send-message', function(payload) {
+		console.log("Message from %s sent: '%s' with payload: %j", payload.name, payload.msg, payload);
+		io.sockets.emit('receive-messages', {msg: payload.msg, name: payload.name});
+	});
+
+
 });
 
-console.log("Polling server is running");
+console.log("muddbutt server is running... ");
