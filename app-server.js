@@ -1,5 +1,8 @@
 var express = require('express');
 var _ = require('underscore');
+var fs = require('fs');
+var request = require('request');
+var cheerio = require('cheerio');
 var app = express();
 
 var connections = [];
@@ -7,7 +10,8 @@ var title = 'muddbutt';
 var audience = [];
 var speaker = {};
 var questions = require('./app-questions');
-var currentQuestion = false
+var currentQuestion = false;
+
 
 var results = {
 	a: 0,
@@ -20,6 +24,8 @@ app.use(express.static('./public'));
 app.use(express.static('./node_modules/bootstrap/dist'));
 
 var server = app.listen(3000);
+var scraper = require('./app-scraper')(app);
+
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {

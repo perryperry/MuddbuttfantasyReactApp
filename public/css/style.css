@@ -3,6 +3,9 @@ body, html, .container-fluid {
     padding: 0;
     margin: 0;
 }
+/** {
+    border: 1px solid black;
+}*/
 
 #connection-status {
     height: 35px;
